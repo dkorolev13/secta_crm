@@ -7,5 +7,28 @@ services:
       - 8000:8000
     volumes:
       - ./secta-crm:/secta-crm
+    environment:
+      - DB_HOST=db
+      - DB_NAME=dbname
+      - DB_USER=dbuser
+      - DB_PASS=pass
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
+    networks:
+      - secta-crm_network
+    depends_on:
+      - db
+  db:
+    container_name: secta-crm_db
+    image: postgres:15-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=dbname
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=pass
+    networks:
+      - secta-crm_network
+networks:
+  secta-crm_network:
+    driver: bridge
